@@ -16,7 +16,7 @@ def main():
                 '</Style>'
     kmlfooter = '</Document>\n</kml>\n'
     kmldoc=kmlheader+plotIPs(pcap)+kmlfooter
-    print(kmldoc) #Final file.
+    print(kmldoc) 
 
 def plotIPs(pcap):
     kmlPts = ''
