@@ -1,0 +1,8 @@
+# Ignore Mac system files
+.DS_store
+
+# Ignore .pcap files
+*.pcap
+
+# Ignore all kml files
+*.kml
