@@ -1,26 +1,31 @@
 import dpkt
 import socket
 import pygeoip
+from urllib.request import urlopen
+import re as r
 
-gi = pygeoip.GeoIP('GeoLiteCity.dat')
+gi = pygeoip.GeoIP('Github/WiresharkTracking/maxmind4.dat')
 
 def main():
-    f = open('wire.pcap', 'rb') #Wireshark file name needs to be wire.pcap.
+    f = open('Github/WiresharkTracking/wire6.pcap', 'rb')
+    fs = open('Github/WiresharkTracking/test6.kml', 'w+')
     pcap = dpkt.pcap.Reader(f)
     kmlheader = '<?xml version="1.0" encoding="UTF-8"?> \n<kml xmlns="http://www.opengis.net/kml/2.2">\n<Document>\n'\
     '<Style id="transBluePoly">' \
                 '<LineStyle>' \
-                '<width>2</width>' \
-                '<color>507814F0</color>' \
+                '<width>1.5</width>' \
+                '<color>501400E6</color>' \
                 '</LineStyle>' \
                 '</Style>'
     kmlfooter = '</Document>\n</kml>\n'
     kmldoc=kmlheader+plotIPs(pcap)+kmlfooter
-    print(kmldoc) 
+    print(kmldoc)
+    fs.write(kmldoc)
+    fs.close()
 
 def plotIPs(pcap):
     kmlPts = ''
-    for (ts, buf) in pcap: #Loop through captured data.
+    for (ts, buf) in pcap:
         try:
             eth = dpkt.ethernet.Ethernet(buf)
             ip = eth.data
@@ -32,10 +37,17 @@ def plotIPs(pcap):
             pass
     return kmlPts
 
+def getIP():
+	d = str(urlopen('http://checkip.dyndns.com/')
+			.read())
+
+	return r.compile(r'Address: (\d+\.\d+\.\d+\.\d+)').search(d).group(1)
+
 def retKML(dstip, srcip):
+    d = str(urlopen('http://checkip.dyndns.com/').read())
+    myipadd = r.compile(r'Address: (\d+\.\d+\.\d+\.\d+)').search(d).group(1)
     dst = gi.record_by_name(dstip)
-    IP_Address = socket.gethostbyname(socket.gethostname()) #Get my IP address.
-    src = gi.record_by_name('IP_Address')
+    src = gi.record_by_name(myipadd)
     try:
         dstlongitude = dst['longitude']
         dstlatitude = dst['latitude']
