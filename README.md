@@ -6,7 +6,7 @@ Using Wireshark, I captured packets from my network and saved that as **wire.pca
 
 The python script will output **test.kml**. Go to https://www.google.com/maps/d/, create a new map and import this file into that map.
 
-### Note:###
+### Note:
 
 I found that Google maps will limit the input to 2000 entires of the kml file, although you can import many layers if you want to visualize a large data set.
 
